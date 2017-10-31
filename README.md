@@ -1,4 +1,4 @@
-#Mansa Leipzig - Alexa Skill
+# Mensa Leipzig - Alexa Skill
 Ein einfacher Skill für den Speiseplan vom Studentenwerk Leipzig.
 
 ## Beispiel
