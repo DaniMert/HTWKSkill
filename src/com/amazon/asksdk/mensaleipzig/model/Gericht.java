@@ -1,5 +1,6 @@
 package com.amazon.asksdk.mensaleipzig.model;
 
+
 import java.util.LinkedList;
 
 /**
@@ -7,6 +8,7 @@ import java.util.LinkedList;
  */
 public class Gericht {
     private String kategorie;
+    private LinkedList<String> tags;
     private LinkedList<String> komponenten;
     private double preis;
 
@@ -16,6 +18,14 @@ public class Gericht {
 
     public void setKategorie(String kategorie) {
         this.kategorie = kategorie;
+    }
+
+    public LinkedList<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(LinkedList<String> tags) {
+        this.tags = tags;
     }
 
     public LinkedList<String> getKomponenten() {

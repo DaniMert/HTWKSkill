@@ -7,25 +7,21 @@
  * <p>
  * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package com.amazon.asksdk.mensaleipzig;
+package com.amazon.asksdk.mensaleipzig.speechlet;
 
+import com.amazon.asksdk.mensaleipzig.helper.SpeechTextHelper;
 import com.amazon.asksdk.mensaleipzig.model.Gericht;
-import com.amazon.speech.slu.Slot;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
-import com.amazon.speech.slu.Intent;
-import com.amazon.speech.speechlet.IntentRequest;
-import com.amazon.speech.speechlet.LaunchRequest;
-import com.amazon.speech.speechlet.SessionEndedRequest;
-import com.amazon.speech.speechlet.SessionStartedRequest;
-import com.amazon.speech.speechlet.SpeechletV2;
-import com.amazon.speech.speechlet.SpeechletResponse;
+import com.amazon.asksdk.mensaleipzig.network.MensaLeipzigRequest;
 import com.amazon.speech.json.SpeechletRequestEnvelope;
+import com.amazon.speech.slu.Intent;
+import com.amazon.speech.slu.Slot;
+import com.amazon.speech.speechlet.*;
+import com.amazon.speech.ui.OutputSpeech;
 import com.amazon.speech.ui.PlainTextOutputSpeech;
 import com.amazon.speech.ui.Reprompt;
 import com.amazon.speech.ui.SimpleCard;
-import com.amazon.speech.ui.OutputSpeech;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -38,6 +34,7 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
 
     private static final String SLOT_MENSA = "Mensa";
     private static final String SLOT_DATUM = "Datum";
+    private static final String SLOT_KATEGORIE = "Kategorie";
     private static final Logger log = LoggerFactory.getLogger(MensaLeipzigSpeechlet.class);
 
     @Override
@@ -65,6 +62,8 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
 
         if ("SpeiseplanIntent".equals(intentName)) {
             return getSpeiseplanResponse(intent);
+        } else if ("GreetingIntent".equals(intentName)) {
+            return getGreetingResponse();
         } else if ("AMAZON.HelpIntent".equals(intentName)) {
             return getHelpResponse();
         } else {
@@ -85,7 +84,7 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
      * @return SpeechletResponse spoken and visual response for the given intent
      */
     private SpeechletResponse getWelcomeResponse() {
-        String speechText = "Willkommen bei Mensa Leipzig. Was kann ich für dich tun?";
+        String speechText = "Willkommen bei Mensa Leipzig.";
         return getAskResponse("Mensa Leipzig", speechText);
     }
 
@@ -96,28 +95,42 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
      * @param intent
      */
     private SpeechletResponse getSpeiseplanResponse(Intent intent) {
-
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
         String datum = dateFormat.format(new Date());
         Slot datumSlot = intent.getSlot(SLOT_DATUM);
         if (datumSlot != null && datumSlot.getValue() != null) {
             datum = datumSlot.getValue();
         }
-        String mensa = intent.getSlot(SLOT_MENSA).getValue();
-
-        LinkedList<Gericht> gerichte = MensaLeipzigRequest.getSpeiseplan(mensa, datum);
-
-        String speechText = "";
-        for (Gericht gericht : gerichte) {
-            speechText = speechText + "Als " + gericht.getKategorie() + " gibt es ";
-
-            for (String komponente : gericht.getKomponenten()) {
-                speechText = speechText + komponente + ", ";
+        Slot mensaSlot = intent.getSlot(SLOT_MENSA);
+        Slot kategorieSlot = intent.getSlot(SLOT_KATEGORIE);
+        if(mensaSlot == null){
+            String speechText = "Bitte eine Mensa in Leipzig angeben.";
+            SimpleCard card = getSimpleCard("Mensa Leipzig", speechText);
+            PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
+            return SpeechletResponse.newTellResponse(speech, card);
+        } else {
+            String mensa = intent.getSlot(SLOT_MENSA).getValue();
+            String kategorie = null;
+            if(kategorieSlot != null) {
+                kategorie = kategorieSlot.getValue();
             }
-            speechText = speechText.substring(0, speechText.length() - 1) + " für " + gericht.getPreis() + "€. ";
-        }
 
-        speechText = speechText.replace("&", "und");
+            LinkedList<Gericht> gerichte = MensaLeipzigRequest.getSpeiseplan(mensa, datum);
+            String speechText = SpeechTextHelper.getSpeechTextFromSpeiseplan(gerichte, kategorie);
+
+            // Create the Simple card content.
+            SimpleCard card = getSimpleCard("Mensa Leipzig", speechText);
+
+            // Create the plain text output.
+            PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
+
+            return SpeechletResponse.newTellResponse(speech, card);
+        }
+    }
+
+    private SpeechletResponse getGreetingResponse() {
+        String speechText = "Geht klar. Herzlich Willkommen zu diesem Vortrag im Oberseminar Chatterbots. Daniel Mertens, Minh Pham und Phil Taubert werden euch nun ein paar Dinge über mich erzählen.";
+
         // Create the Simple card content.
         SimpleCard card = getSimpleCard("Mensa Leipzig", speechText);
 
@@ -134,7 +147,12 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
      */
     private SpeechletResponse getHelpResponse() {
         String speechText = "Du kannst mich fragen was es heute in den Leipziger Mensen zu Essen gibt.";
-        return getAskResponse("Mensa Leipzig", speechText);
+        SimpleCard card = getSimpleCard("Mensa Leipzig", speechText);
+
+        // Create the plain text output.
+        PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
+
+        return SpeechletResponse.newTellResponse(speech, card);
     }
 
     /**

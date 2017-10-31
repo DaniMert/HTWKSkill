@@ -7,12 +7,12 @@
 
     or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
  */
-package com.amazon.asksdk.mensaleipzig;
+package com.amazon.asksdk.mensaleipzig.speechlet;
+
+import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 
 import java.util.HashSet;
 import java.util.Set;
-
-import com.amazon.speech.speechlet.lambda.SpeechletRequestStreamHandler;
 
 /**
  * This class could be the handler for an AWS Lambda function powering an Alexa Skills Kit

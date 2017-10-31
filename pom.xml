@@ -1,12 +1,24 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
   xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>alexa-skills-kit-samples</groupId>
-  <artifactId>helloworld</artifactId>
+  <groupId>os-chatterbots</groupId>
+  <artifactId>mensaleipzig</artifactId>
   <packaging>jar</packaging>
   <version>1.0</version>
-  <name>helloworld</name>
-  <url>http://developer.amazon.com/ask</url>
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <configuration>
+          <source>1.7</source>
+          <target>1.7</target>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  <name>mensaleipzig</name>
+  <url>https://www.studentenwerk-leipzig.de/mensen-cafeterien/speiseplan</url>
 
   <repositories>
     <repository>
@@ -73,7 +85,6 @@
       <groupId>com.amazonaws</groupId>
       <artifactId>aws-lambda-java-log4j</artifactId>
       <version>1.0.0</version>
-      <scope>compile</scope>
     </dependency>
     <dependency>
       <groupId>com.amazonaws</groupId>
@@ -86,63 +97,4 @@
       <version>1.4.9</version>
     </dependency>
   </dependencies>
-
-  <properties>
-    <property name="disableRequestSignatureCheck" value="false"/>
-    <property name="supportedApplicationIds" value=""/>
-    <property name="timestampTolerance" value="150"/>
-  </properties>
-
-  <build>
-    <sourceDirectory>src</sourceDirectory>
-    <resources>
-      <resource>
-        <directory>src/resources</directory>
-      </resource>
-    </resources>
-    <pluginManagement>
-      <plugins>
-        <plugin>
-          <groupId>org.apache.maven.plugins</groupId>
-          <artifactId>maven-compiler-plugin</artifactId>
-          <version>3.3</version>
-          <configuration>
-            <source>1.7</source>
-            <target>1.7</target>
-          </configuration>
-        </plugin>
-
-        <plugin>
-          <groupId>org.codehaus.mojo</groupId>
-          <artifactId>exec-maven-plugin</artifactId>
-          <version>1.2.1</version>
-          <configuration>
-            <mainClass>Launcher</mainClass>
-            <systemProperties>
-              <systemProperty>
-                <key>javax.net.ssl.keyStore</key>
-                <value>/insert/your/path/java-keystore.jks</value>
-              </systemProperty>
-              <systemProperty>
-                <key>javax.net.ssl.keyStorePassword</key>
-                <value>insert_your_password</value>
-              </systemProperty>
-              <systemProperty>
-                <key>com.amazon.speech.speechlet.servlet.disableRequestSignatureCheck</key>
-                <value>${disableRequestSignatureCheck}</value>
-              </systemProperty>
-              <systemProperty>
-                <key>com.amazon.speech.speechlet.servlet.supportedApplicationIds</key>
-                <value>${supportedApplicationIds}</value>
-              </systemProperty>
-              <systemProperty>
-                <key>com.amazon.speech.speechlet.servlet.timestampTolerance</key>
-                <value>${timestampTolerance}</value>
-              </systemProperty>
-            </systemProperties>
-          </configuration>
-        </plugin>
-      </plugins>
-    </pluginManagement>
-  </build>
 </project>

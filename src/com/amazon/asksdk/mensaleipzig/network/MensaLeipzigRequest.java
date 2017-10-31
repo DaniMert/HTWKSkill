@@ -1,11 +1,10 @@
-package com.amazon.asksdk.mensaleipzig;
+package com.amazon.asksdk.mensaleipzig.network;
 
 import com.amazon.asksdk.mensaleipzig.model.Gericht;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
@@ -39,7 +38,8 @@ public class MensaLeipzigRequest {
     public static LinkedList<Gericht> getSpeiseplan(String mensa, String datum) {
         String xmlResponse = null;
         try {
-            xmlResponse = Unirest.get("https://www.studentenwerk-leipzig.de/XMLInterface/request?location=" + mensaCodes.get(mensa) + "&date=" + datum).asString().getBody();
+            String url = "https://www.studentenwerk-leipzig.de/XMLInterface/request?location=" + mensaCodes.get(mensa) + "&date=" + datum;
+            xmlResponse = Unirest.get(url).asString().getBody();
         } catch (UnirestException e) {
             e.printStackTrace();
         }
@@ -61,6 +61,7 @@ public class MensaLeipzigRequest {
                     Element kategorie = (Element) group.getElementsByTagName("name").item(0);
                     Element preis = (Element) group.getElementsByTagName("price").item(0);
                     NodeList komponentenList = group.getElementsByTagName("name1");
+                    NodeList tagList = group.getElementsByTagName("tagging");
 
                     Gericht gericht = new Gericht();
                     gericht.setKategorie(kategorie.getTextContent());
@@ -70,6 +71,11 @@ public class MensaLeipzigRequest {
                         komponenten.add(komponentenList.item(k).getTextContent());
                     }
                     gericht.setKomponenten(komponenten);
+                    LinkedList<String> tags = new LinkedList<>();
+                    for (int k = 0; k < tagList.getLength(); k++){
+                        tags.add(tagList.item(k).getTextContent());
+                    }
+                    gericht.setTags(tags);
                     gerichte.add(gericht);
                 }
 
