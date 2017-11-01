@@ -1,12 +1,3 @@
-/**
- * Copyright 2014-2015 Amazon.com, Inc. or its affiliates. All Rights Reserved.
- * <p>
- * Licensed under the Apache License, Version 2.0 (the "License"). You may not use this file except in compliance with the License. A copy of the License is located at
- * <p>
- * http://aws.amazon.com/apache2.0/
- * <p>
- * or in the "license" file accompanying this file. This file is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied. See the License for the specific language governing permissions and limitations under the License.
- */
 package com.amazon.asksdk.mensaleipzig.speechlet;
 
 import com.amazon.asksdk.mensaleipzig.helper.SpeechTextHelper;
@@ -27,9 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.LinkedList;
 
-/**
- * This sample shows how to create a simple speechlet for handling speechlet requests.
- */
 public class MensaLeipzigSpeechlet implements SpeechletV2 {
 
     private static final String SLOT_MENSA = "Mensa";
@@ -41,7 +29,6 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
     public void onSessionStarted(SpeechletRequestEnvelope<SessionStartedRequest> requestEnvelope) {
         log.info("onSessionStarted requestId={}, sessionId={}", requestEnvelope.getRequest().getRequestId(),
                 requestEnvelope.getSession().getSessionId());
-        // any initialization logic goes here
     }
 
     @Override
@@ -75,7 +62,6 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
     public void onSessionEnded(SpeechletRequestEnvelope<SessionEndedRequest> requestEnvelope) {
         log.info("onSessionEnded requestId={}, sessionId={}", requestEnvelope.getRequest().getRequestId(),
                 requestEnvelope.getSession().getSessionId());
-        // any cleanup logic goes here
     }
 
     /**
@@ -89,7 +75,7 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
     }
 
     /**
-     * Creates a {@code SpeechletResponse} for the hello intent.
+     * Creates a {@code SpeechletResponse} for the Speiseplan intent.
      *
      * @return SpeechletResponse spoken and visual response for the given intent
      * @param intent
@@ -127,14 +113,15 @@ public class MensaLeipzigSpeechlet implements SpeechletV2 {
             return SpeechletResponse.newTellResponse(speech, card);
         }
     }
-
+    /**
+     * Creates a {@code SpeechletResponse} for the Greeting intent.
+     *
+     * @return SpeechletResponse spoken and visual response for the given intent
+     */
     private SpeechletResponse getGreetingResponse() {
         String speechText = "Geht klar. Herzlich Willkommen zu diesem Vortrag im Oberseminar Chatterbots. Daniel Mertens, Minh Pham und Phil Taubert werden euch nun ein paar Dinge über mich erzählen.";
 
-        // Create the Simple card content.
         SimpleCard card = getSimpleCard("Mensa Leipzig", speechText);
-
-        // Create the plain text output.
         PlainTextOutputSpeech speech = getPlainTextOutputSpeech(speechText);
 
         return SpeechletResponse.newTellResponse(speech, card);
