@@ -12,6 +12,6 @@ import java.util.LinkedList;
 public class Main {
     public static void main(String[] args) {
         LinkedList<Gericht> gerichte = MensaLeipzigRequest.getSpeiseplan("mensa academica", "2017-11-01");
-        System.out.println(SpeechTextHelper.getSpeechTextFromSpeiseplan(gerichte, ""));
+        System.out.println(SpeechTextHelper.getSpeechTextFromSpeiseplan(gerichte, "vegane gericht"));
     }
 }
